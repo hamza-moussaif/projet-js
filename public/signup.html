@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup</title>
+    <link rel="stylesheet" href="signup.css">
+</head>
+<body>
+<div class="container">
+
+    <h1>Sign Up</h1>
+    
+    <form id="signupForm">
+        <input type="email" id="signupEmail" placeholder="Email" required />
+        <input type="password" id="signupPassword" placeholder="Password" required />
+        <select id="signupRole" required>
+            <option value="" disabled selected>Select Role</option>
+            <option value="Customer">Customer</option>
+            <option value="Admin">Admin</option>
+        </select>
+        <button type="submit">Sign Up</button>
+    </form>
+</div>
+    
+    <div id="validationMessage"></div>
+
+    <script src="signup.js"></script>
+</body>
+</html>

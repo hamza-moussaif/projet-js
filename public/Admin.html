@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <!-- Link to External Stylesheets -->
+  <link rel="stylesheet" href="Admin.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+  <!-- Main Dashboard Container -->
+  <div class="dashboard">
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <!-- Sidebar Header -->
+      <div class="sidebar-header">
+        <h2>🚗 VroomGo Admin</h2>
+      </div>
+
+      <!-- Sidebar Menu Links -->
+      <ul class="sidebar-menu">
+        <li><a href="#" id="dashboardLink" class="active"><i class="fas fa-chart-pie"></i> Dashboard</a></li>
+        <li><a href="#" id="bookedCarsLink"><i class="fas fa-car"></i> Booked Cars</a></li>
+        <li><a href="#" id="manageCarsLink"><i class="fas fa-tools"></i> Manage Cars</a></li>
+        <li><a href="#" id="logoutLink"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+      </ul>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+
+      <!-- Header Section -->
+      <header class="main-header">
+        <h1>Welcome, Admin 👋</h1>
+        <p>Manage your cars and bookings seamlessly.</p>
+      </header>
+
+      <!-- Dynamic Content Section -->
+      <section id="content" class="content-section">
+        <!-- Default Content for Dashboard Overview (replaces dynamically) -->
+        <div class="dashboard-overview">
+          <div class="card">
+            <h2>Total Booked Cars</h2>
+            <p id="bookedCarCount">Loading...</p> <!-- Placeholder for booked car count -->
+          </div>
+          <div class="card">
+            <h2>Total Cars</h2>
+            <p id="totalCarsCount">Loading...</p> <!-- Placeholder for total car count -->
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Link to External JavaScript File -->
+  <script src="admin.js"></script>
+</body>
+
+</html>

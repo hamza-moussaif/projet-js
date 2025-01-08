@@ -1,0 +1,71 @@
+/* Signup Page Specific Styles */
+body {
+    background-color: #f7f7f7;
+}
+
+.container {
+    width: 100%;
+    max-width: 450px;
+    padding: 40px;
+    margin: auto;
+    text-align: center;
+    justify-content: center;
+    margin-top: 10%;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    font-size: 32px;
+    color: #f57c00;
+    margin-bottom: 30px;
+}
+
+form input, form select {
+    font-size: 16px;
+    padding: 14px;
+    justify-content: center;
+    margin-bottom: 18px;
+    border-radius: 8px;
+    border: 2px solid #ddd;
+    width: 90%;
+}
+
+form input[type="email"]:focus, 
+form input[type="password"]:focus,
+form select:focus {
+    border-color: #f57c00;
+}
+
+button {
+    background-color: #f57c00;
+    padding: 14px;
+    font-size: 16px;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
+}
+
+button:hover {
+    background-color: #ff9800;
+}
+
+a {
+    color: #f57c00;
+    font-size: 14px;
+    text-decoration: none;
+    margin-top: 15px;
+}
+
+a:hover {
+    color: #ff9800;
+}
+
+#validationMessage {
+    color: red;
+    font-size: 14px;
+    text-align: center;
+    margin-top: 10px;
+}
