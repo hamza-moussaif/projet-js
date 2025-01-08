@@ -1,1 +1,16 @@
-[{"id":3,"name":"dacia","customer":"dz","date_debut":"2025-01-09","date_fin":"2025-01-10"}]
+[
+  {
+    "carId": 1736366298096,
+    "name": "Dacia",
+    "model": "2017",
+    "price": 100,
+    "image": "htttps://www.dacia.ma"
+  },
+  {
+    "carId": "1736366325097",
+    "name": "Mercedes",
+    "model": "2024",
+    "price": 850,
+    "image": "https://i.gaw.to/content/photos/57/11/571148-mercedes-benz-classe-e-2024-nouveau-chapitre-personnages-manquants.jpeg"
+  }
+]

@@ -5,16 +5,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Function to fetch and display booked cars
   function loadBookedCars() {
-    fetch('/booking')  // Ensure this matches the endpoint where bookings are served
+    fetch("/booking")
       .then(handleResponse)
-      .then(bookedCars => displayBookedCars(bookedCars))
-      .catch(error => handleError(error));
+      .then((bookedCars) => displayBookedCars(bookedCars))
+      .catch((error) => handleError(error));
+  }
+
+  // Function to fetch and display cars
+  function loadCars() {
+    fetch("/cars")
+      .then(handleResponse)
+      .then((cars) => manageCarsForm(cars))
+      .catch((error) => handleError(error));
   }
 
   // Handle the response and check if it's OK
   function handleResponse(response) {
     if (!response.ok) {
-      throw new Error('Network response was not ok ' + response.statusText);
+      throw new Error("Network response was not ok " + response.statusText);
     }
     return response.json();
   }
@@ -31,25 +39,29 @@ document.addEventListener("DOMContentLoaded", () => {
       <table>
         <thead>
           <tr>
-            <th>ID</th>
+            <th>User Email</th>
             <th>Car Name</th>
-            <th>Customer</th>
             <th>Date Debut</th>
             <th>Date Fin</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          ${bookedCars.map(car => `
+          ${bookedCars
+            .map(
+              (car) => `
             <tr>
-              <td>${car.id}</td>
-              <td>${car.name}</td>
-              <td>${car.customer}</td>
-              <td>${car.date_debut}</td>
-              <td>${car.date_fin}</td>
-              <td><button class="delete-btn" data-id="${car.id}">Delete</button></td>
+              <td>${car.user}</td>
+              <td>${car.nameCar}</td>
+              <td>${car.startDate}</td>
+              <td>${car.endDate}</td>
+              <td>
+                <button class="delete-btn-book" data-id="${car.user}">Delete</button>
+              </td>
             </tr>
-          `).join('')}
+          `
+            )
+            .join("")}
         </tbody>
       </table>
     `;
@@ -57,83 +69,158 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Handle errors and display error message
   function handleError(error) {
-    console.error('Error fetching data:', error);
+    console.error("Error fetching data:", error);
     const content = document.getElementById("content");
     content.innerHTML = `<h2>Error fetching data: ${error.message}</h2>`;
   }
 
   // Function to manage car form
-  function manageCarsForm() {
+  function manageCarsForm(cars) {
     const content = document.getElementById("content");
     content.innerHTML = `
-      <h2>Manage Cars</h2>
-      <form id="addCarForm">
-        <input type="text" id="carName" placeholder="Car Name" required>
-        <input type="text" id="customerName" placeholder="Customer Name" required>
-        <input type="date" id="bookingDate" required>
-        <input type="date" id="bookingDateEnd" required>
-        <button type="submit">Add Booking</button>
-      </form>
-    `;
+    <h2>Manage Cars</h2>
+    <form id="addCarForm">
+      <input type="text" id="carName" placeholder="Car Name" required>
+      <input type="text" id="carModel" placeholder="Car Model" required>
+      <input type="number" id="price" required min="0" placeholder="Price of the car">
+      <input type="text" id="image" required placeholder="Link of the car">
+      <button type="submit">Add Car</button>
+    </form>
+    <h2>Available Cars</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Car Name</th>
+          <th>Car Model</th>
+          <th>Price</th>
+          <th>Image</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+      ${cars
+        .map(
+          (car) => `
+          <tr>
+            <td><input type="text" value="${car.carId}" disabled/></td>
+            <td><input type="text" value="${car.name}" disabled/></td>
+            <td><input type="text" value="${car.model}" disabled/></td>
+            <td><input type="number" value="${car.price}" disabled/></td>
+            <td><input type="text" value="${car.image}" disabled/></td>
+            <td>
+              <button class="update-btn-car" data-id="${car.carId}">Update</button>
+              <button class="delete-btn-car" data-id="${car.carId}">Delete</button>
+            </td>
+          </tr>
+        `
+        )
+        .join("")}
+      </tbody>
+    </table>
+  `;
 
     const addCarForm = document.getElementById("addCarForm");
-    addCarForm.addEventListener("submit", handleAddBooking);
+    addCarForm.addEventListener("submit", handleAddCar);
+
+    const table = content.querySelector("table");
+    table.addEventListener("click", (event) => {
+      const target = event.target;
+
+      if (target.classList.contains("update-btn-car")) {
+        const row = target.closest("tr");
+        const inputs = row.querySelectorAll(
+          "input[type='text'], input[type='number']"
+        );
+
+        if (inputs[0].disabled) {
+          inputs.forEach((input) => (input.disabled = false));
+          target.textContent = "Save";
+        } else {
+          const updatedCar = {
+            carId: inputs[0].value,
+            name: inputs[1].value,
+            model: inputs[2].value,
+            price: parseFloat(inputs[3].value),
+            image: inputs[4].value,
+          };
+          updateCar(updatedCar);
+          inputs.forEach((input) => (input.disabled = true));
+          target.textContent = "Update";
+        }
+      }
+
+      if (target.classList.contains("delete-btn-car")) {
+        const carId = target.dataset.id;
+        deleteCar(carId);
+      }
+    });
   }
 
-  // Handle the form submission to add a new booking
-  function handleAddBooking(e) {
+  function handleAddCar(e) {
     e.preventDefault();
-    const carName = document.getElementById("carName").value;
-    const customerName = document.getElementById("customerName").value;
-    const bookingDate = document.getElementById("bookingDate").value;
-    const bookingDateEnd = document.getElementById("bookingDateEnd").value;
+    const carId = Date.now();
+    const carName = document.getElementById("carName").value.trim();
+    const carModel = document.getElementById("carModel").value.trim();
+    const price = parseFloat(document.getElementById("price").value);
+    const image = document.getElementById("image").value.trim();
 
-    const newBooking = {
-      id: Date.now(), // using timestamp as ID for simplicity
+    const newCar = {
+      carId,
       name: carName,
-      customer: customerName,
-      date_debut: bookingDate,
-      date_fin: bookingDateEnd,
+      model: carModel,
+      price,
+      image,
     };
 
-    fetch('/booking', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(newBooking),
+    fetch("/cars", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newCar),
     })
-    .then(response => response.json())
-    .then(() => loadBookedCars()) // Refresh the booking list after adding
-    .catch(error => handleError(error));
+      .then((response) => response.json())
+      .then(() => loadCars())
+      .catch((error) => handleError(error));
   }
 
-  // Delete a booking by ID
-  function deleteBooking(carId) {
-    fetch(`/booking/${carId}`, { method: 'DELETE' })
-      .then(() => loadBookedCars()) // Refresh the booking list after deletion
-      .catch(error => handleError(error));
+  function deleteCar(carId) {
+    fetch(`/cars/${carId}`, { method: "DELETE" })
+      .then(() => loadCars())
+      .catch((error) => handleError(error));
   }
 
-  // Event listener for deleting a booking
-  document.body.addEventListener("click", (e) => {
-    if (e.target.classList.contains("delete-btn")) {
-      const carId = e.target.getAttribute("data-id");
-      deleteBooking(carId);
-    }
-  });
+  function updateCar(updatedCar) {
+    fetch(`/update/car/`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updatedCar),
+    })
+      .then(() => loadCars())
+      .catch((error) => handleError(error));
+  }
 
-  // Event listener for Booked Cars link
-  bookedCarsLink.addEventListener("click", () => {
-    loadBookedCars();
-  });
+  if (bookedCarsLink) {
+    bookedCarsLink.addEventListener("click", loadBookedCars);
+  }
 
-  // Event listener for Manage Cars link
-  manageCarsLink.addEventListener("click", () => {
-    manageCarsForm();
-  });
+  if (manageCarsLink) {
+    manageCarsLink.addEventListener("click", loadCars);
+  }
 
-  // Event listener for Logout link
-  logoutLink.addEventListener("click", () => {
-    alert("You have been logged out.");
-    window.location.href = "/index.html"; // Redirect to login page
-  });
+  if (logoutLink) {
+    logoutLink.addEventListener("click", async () => {
+      try {
+        const response = await fetch("/logout", { method: "POST" });
+        if (response.ok) {
+          alert("Logout successful");
+          window.localStorage.clear();
+          window.location.href = "/";
+        } else {
+          alert("Logout failed");
+        }
+      } catch (error) {
+        console.error("Error logging out:", error);
+      }
+    });
+  }
 });
